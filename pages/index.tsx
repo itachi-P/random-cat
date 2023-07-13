@@ -1,16 +1,16 @@
 import { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
-import styles from "./index.module.css"; //CSS Modulesの読み込み
+// import styles from "./index.module.css"; //CSS Modulesの読み込み
 
-type Props = {
-	initialImageUrl: string;
+type IndexPageProps = {
+	initialCatImageUrl: string;
 };
 
 const IndexPage: NextPage<IndexPageProps> = ({ initialCatImageUrl }) => {
 	const [catImageUrl, setCatImageUrl] = useState(initialCatImageUrl);
 
 	const handleClick = async () => {
-		const image = await fetchImage();
+		const image = await fetchCatImage();
 		setCatImageUrl(image.url);
 	};
 
@@ -37,11 +37,11 @@ const IndexPage: NextPage<IndexPageProps> = ({ initialCatImageUrl }) => {
 export default IndexPage;
 
 // サーバーサイドで実行する処理
-export const getServerSideProps: GetServerSideProps<Props> = async () => {
-	const image = await fetchImage();
+export const getServerSideProps: GetServerSideProps<IndexPageProps> = async () => {
+	const image = await fetchCatImage();
 	return {
 		props: {
-			initialImageUrl: image.url,
+			initialCatImageUrl: image.url,
 		},
 	};
 };
@@ -51,7 +51,7 @@ type Image = {
 };
 //The Cat APIにリクエストし、猫画像を取得する関数
 //より防衛的に、サーバのレスポンスをチェックする
-const fetchImage = async (): Promise<Image> => {
+const fetchCatImage = async (): Promise<Image> => {
 	const res = await fetch("https://api.thecatapi.com/v1/images/search");
 	// 一旦unknown型で受け取り、型アサーションで型を指定する
 	const images: unknown = await res.json();
