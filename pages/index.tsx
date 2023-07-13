@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
-// import styles from "./index.module.css"; //CSS Modulesの読み込み
+import styles from "./index.module.css"; //CSS Modulesの読み込み
 
 type IndexPageProps = {
 	initialCatImageUrl: string;
@@ -8,28 +8,22 @@ type IndexPageProps = {
 
 const IndexPage: NextPage<IndexPageProps> = ({ initialCatImageUrl }) => {
 	const [catImageUrl, setCatImageUrl] = useState(initialCatImageUrl);
+	const [loading, setLoading] = useState(false);
 
 	const handleClick = async () => {
-		const image = await fetchCatImage();
-		setCatImageUrl(image.url);
+		setLoading(true);
+		const newImage = await fetchCatImage();
+		setCatImageUrl(newImage.url);
+		setLoading(false);
 	};
 
 	return (
-		<div>
-			<button
-				onClick={handleClick}
-				style={{
-					backgroundColor: "#319795",
-					border: "none",
-					borderRadius: "4px",
-					color: "white",
-					padding: "4px 8px",
-				}}
-			>
-				つぎのにゃんこ🐱
+		<div className={styles.page}>
+			<button onClick={handleClick} className={styles.button}>
+				他のにゃんこも見る
 			</button>
-			<div style={{ marginTop: 8, maxWidth: 500 }}>
-				<img src={catImageUrl} width="100%" height="auto" alt="猫" />
+			<div className={styles.frame}>
+				{loading || <img src={catImageUrl} className={styles.image} />}
 			</div>
 		</div >
 	);
