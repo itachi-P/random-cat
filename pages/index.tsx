@@ -2,39 +2,36 @@ import { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import styles from "./index.module.css"; //CSS Modulesの読み込み
 
-// getServerSidePropsから渡されるpropsの型
 type Props = {
 	initialImageUrl: string;
 };
 
-// ページコンポーネント関数にpropsを受け取る引数を追加する
-const IndexPage: NextPage<Props> = ({ initialImageUrl }) => {
-	const [imageUrl, setImageUrl] = useState(initialImageUrl); // 初期値を渡す
-	const [loading, setLoading] = useState(false); // 初期状態はfalseにしておく
-
-	// getServerSidePropsを使わない場合は、以下のように書く(useEffectのimportも必要)
-	// useEffect(() => {
-	//   fetchImage().then((newImage) => {
-	//     setImageUrl(newImage.url);
-	//     setLoading(false);
-	//   });
-	// }, []);
+const IndexPage: NextPage<IndexPageProps> = ({ initialCatImageUrl }) => {
+	const [catImageUrl, setCatImageUrl] = useState(initialCatImageUrl);
 
 	const handleClick = async () => {
-		setLoading(true);
-		const newImage = await fetchImage();
-		setImageUrl(newImage.url);
-		setLoading(false);
+		const image = await fetchImage();
+		setCatImageUrl(image.url);
 	};
+
 	return (
-		<div className={styles.page}>
-			<button onClick={handleClick} className={styles.button}>
-				他のにゃんこも見る
+		<div>
+			<button
+				onClick={handleClick}
+				style={{
+					backgroundColor: "#319795",
+					border: "none",
+					borderRadius: "4px",
+					color: "white",
+					padding: "4px 8px",
+				}}
+			>
+				きょうのにゃんこ🐱
 			</button>
-			<div className={styles.frame}>
-				{loading || <img src={imageUrl} className={styles.img} />}
+			<div style={{ marginTop: 8, maxWidth: 500 }}>
+				<img src={catImageUrl} width="100%" height="auto" alt="猫" />
 			</div>
-		</div>
+		</div >
 	);
 };
 export default IndexPage;
